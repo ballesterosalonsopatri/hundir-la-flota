@@ -1,38 +1,49 @@
-from funciones import tablero
-from funciones import colocar_barco
-from funciones import validar_posicion_aleatoria
-from funciones import disparar
-from funciones import borrar_barco
 
 
+from utils import crear_tablero
+from utils import mostrar_tablero
+from utils import colocar_barcos
+from utils import disparar
+from utils import turno_jugador
+from utils import turno_rival
+from utils import asignar_turno_inicial
 
-tablero_barcos_jugador = tablero()
-tablero_disparos_jugador = tablero()
-tablero_rival = tablero()
-tablero_disparos_rival = tablero()
+def juego():
+    print("=== ¡Bienvenido a Batalla Naval! ===")
+
+    # Crear tableros
+    tablero_jugador = crear_tablero()
+    tablero_rival = crear_tablero()
+
+    # Colocar barcos aleatoriamente
+    barcos_jugador = colocar_barcos(tablero_jugador)
+    barcos_rival = colocar_barcos(tablero_rival)
+    tiros_rival = set()
+
+    # Asignar turno inicial
+    turno = asignar_turno_inicial()
+
+    # Bucle principal
+    while True:
+        print("\nTu tablero:")
+        mostrar_tablero(tablero_jugador)
+        print("\nTablero del rival:")
+        mostrar_tablero(tablero_rival)
+
+        if turno == "jugador":
+            turno_jugador(tablero_rival, barcos_rival)
+            if len(barcos_rival) == 0:
+                print("\n ¡Has ganado! Todos los barcos del rival hundidos.")
+                break
+            turno = "rival"
+        else:
+            turno_rival(tablero_jugador, barcos_jugador, tiros_rival)
+            if len(barcos_jugador) == 0:
+                print("\n ¡El rival ha ganado! Todos tus barcos hundidos.")
+                break
+            turno = "jugador"
 
 
-barco_jugador = [[(0,0), (0,1), (0,2)], [(7, 4), (6, 4)]]
-for barco in barco_jugador:
-    print(barco)
-    for posicion in barco:
-        print(posicion)
-        tablero_barcos_jugador [posicion] = "O"
-
-print(tablero_barcos_jugador)
-
-
-
-
-while(len(barco_jugador) > 0):
-    coord = input("Introduce coord separados por un espacio")
-    coord = coord.split()
-    x = int(coord[0])
-    y = int((coord[1]))
-
-    disparar(tablero_barcos_jugador,x,y)
-    borrar_barco(barco_jugador, x, y)
-
-print("El huego ha finalizado")
-
+if __name__ == "__main__":
+    juego()
 
